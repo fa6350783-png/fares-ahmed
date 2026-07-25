@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مكتبة مواد قسم هندسة القوى الميكانيكية</title>
+<link rel="icon" href="favicone.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@custom-variant dark (&:where(.dark, .dark *));
+</style>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{font-family:'Cairo',sans-serif}
+html,body{margin:0;padding:0;min-height:100vh}
+#root{display:flex;flex-direction:column;min-height:100vh}
+.dot-pattern{background-image:radial-gradient(circle,rgba(99,102,241,0.22) 1.5px,transparent 1.5px);background-size:20px 20px}
+.dark .dot-pattern{background-image:radial-gradient(circle,rgba(99,102,241,0.1) 1px,transparent 1px);background-size:20px 20px}
+.glass{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.card-hover{transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}
+.card-hover:hover{transform:translateY(-4px)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+.fade-in{animation:fadeIn 0.3s ease forwards}
+.modal-animate{animation:modalIn 0.25s ease forwards}
+.toast-in{animation:toastIn 0.35s ease forwards}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#6366f1;border-radius:3px}
+
+input,textarea{font-family:'Cairo',sans-serif !important}
+
+.move-btn{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:9px;transition:all 0.2s;flex-shrink:0}
+.move-btn:hover:not(:disabled){transform:scale(1.15)}
+.move-btn:disabled{opacity:0.25;cursor:not-allowed}
+.upload-zone{border:2px dashed #6366f1 !important;border-radius:1rem !important;padding:2rem !important;text-align:center !important;cursor:pointer;transition:all 0.3s}
+.upload-zone:hover{background:rgba(99,102,241,0.1) !important;border-color:#818cf8 !important}
+.upload-zone.dragover{background:rgba(99,102,241,0.2) !important;border-color:#818cf8 !important;transform:scale(1.01)}
+
+/* Dark mode contrast fixes (modals, forms, sections, course content) */
+.dark, .dark body{color-scheme:dark}
+.dark body{background-color:#030712;color:#e5e7eb}
+.dark input, .dark textarea, .dark select{
+  background-color:#1f2937 !important;
+  color:#f9fafb !important;
+  border-color:#4b5563 !important;
+  caret-color:#f9fafb;
+}
+.dark input::placeholder, .dark textarea::placeholder{color:#9ca3af !important;opacity:1}
+.dark input:focus, .dark textarea:focus, .dark select:focus{
+  border-color:#6366f1 !important;
+  outline:none;
+  box-shadow:0 0 0 2px rgba(99,102,241,0.35);
+}
+/* Modal panels (portaled to body) */
+.dark .modal-animate{
+  background-color:#111827 !important;
+  border-color:#374151 !important;
+  color:#f3f4f6 !important;
+}
+.dark .modal-animate h3,
+.dark .modal-animate label,
+.dark .modal-animate .font-semibold,
+.dark .modal-animate .font-bold{color:#f3f4f6 !important}
+.dark .modal-animate p,
+.dark .modal-animate span{color:#d1d5db}
+.dark .modal-animate .border-b,
+.dark .modal-animate .border-t,
+.dark .modal-animate .border{border-color:#374151 !important}
+.dark .modal-animate button{color:inherit}
+/* Section lists / course content cards */
+.dark .border.rounded-xl,
+.dark .rounded-xl.border,
+.dark .rounded-2xl.border{
+  border-color:#374151 !important;
+}
+.dark .bg-gray-50{background-color:#1f2937 !important}
+.dark .bg-white{background-color:#111827 !important}
+.dark .bg-white\/80{background-color:rgba(17,24,39,0.88) !important}
+.dark .bg-white\/50{background-color:rgba(17,24,39,0.55) !important}
+.dark .text-gray-800{color:#f3f4f6 !important}
+.dark .text-gray-700{color:#e5e7eb !important}
+.dark .text-gray-600{color:#d1d5db !important}
+.dark .text-gray-500{color:#9ca3af !important}
+.dark .text-gray-400{color:#9ca3af !important}
+.dark .text-gray-300{color:#e5e7eb !important}
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300{border-color:#374151 !important}
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover{background-color:#1f2937 !important}
+.dark .hover\:bg-gray-200:hover{background-color:#374151 !important}
+/* Keep primary action buttons readable */
+.dark .upload-zone{background-color:rgba(17,24,39,0.6) !important}
+.dark .upload-zone:hover{background:rgba(99,102,241,0.12) !important}
+.dark .upload-zone p{color:#e5e7eb !important}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+
+const STORAGE_KEY=window.__SNAPSHOT_STORAGE_KEY__||'study_resources_v7';
+const DB_NAME=window.__SNAPSHOT_DB_NAME__||'GalleryDB_v3';
+const DB_VERSION=2;
+const STORE_NAME='images';
+const STATE_STORE='appState';
+const NOTE_COLORS_LIGHT=[
+{bg:'linear-gradient(135deg,#fef9c3,#fef08a)',color:'#713f12'},
+{bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)',color:'#1e3a8a'},
+{bg:'linear-gradient(135deg,#dcfce7,#bbf7d0)',color:'#166534'},
+{bg:'linear-gradient(135deg,#fce7f3,#fbcfe8)',color:'#9d174d'},
+{bg:'linear-gradient(135deg,#f3e8ff,#e9d5ff)',color:'#5b21b6'}
+];
+const NOTE_COLORS_DARK=[
+{bg:'linear-gradient(135deg,#78350f,#92400e)',color:'#fef3c7'},
+{bg:'linear-gradient(135deg,#1e3a8a,#1e40af)',color:'#dbeafe'},
+{bg:'linear-gradient(135deg,#14532d,#166534)',color:'#d1fae5'},
+{bg:'linear-gradient(135deg,#831843,#9d174d)',color:'#fce7f3'},
+{bg:'linear-gradient(135deg,#4c1d95,#6d28d9)',color:'#ede9fe'}
+];
+const COURSE_ICONS=['fa-book','fa-flask','fa-calculator','fa-drafting-compass','fa-code','fa-cogs','fa-atom','fa-globe','fa-lightbulb','fa-graduation-cap','fa-brain','fa-chart-bar','fa-images','fa-camera','fa-photo-film','fa-panorama','fa-image','fa-mountain-sun','fa-industry','fa-hard-drive','fa-feather','fa-star','fa-book-open'];
+const COURSE_COLORS=['from-indigo-500 to-purple-600','from-cyan-500 to-blue-600','from-emerald-500 to-teal-600','from-orange-500 to-red-500','from-pink-500 to-rose-600','from-violet-500 to-purple-700','from-sky-500 to-indigo-600','from-amber-500 to-orange-600','from-green-500 to-emerald-600','from-red-500 to-pink-600'];
+
+const uid=()=>'id-'+Date.now()+'-'+Math.random().toString(36).substr(2,9);
+const getLinkIcon=u=>{if(!u)return'fa-link';if(u.includes('youtube.com')||u.includes('youtu.be'))return'fa-brands fa-youtube';if(u.includes('drive.google.com'))return'fa-brands fa-google-drive';if(u.includes('sharepoint.com')||u.includes('onedrive'))return'fa-brands fa-microsoft';return'fa-link';};
+const getLinkColor=u=>{if(!u)return'text-gray-500';if(u.includes('youtube.com')||u.includes('youtu.be'))return'text-red-500';if(u.includes('drive.google.com'))return'text-green-500';if(u.includes('sharepoint.com')||u.includes('onedrive'))return'text-blue-500';return'text-indigo-500';};
+
+// IndexedDB
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onerror=()=>rej(r.error);r.onsuccess=()=>res(r.result);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(STORE_NAME))db.createObjectStore(STORE_NAME,{keyPath:'id'});if(!db.objectStoreNames.contains(STATE_STORE))db.createObjectStore(STATE_STORE,{keyPath:'key'});};});}
+async function idbGetState(key){const db=await openDB();return new Promise((res,rej)=>{if(!db.objectStoreNames.contains(STATE_STORE)){res(undefined);return;}const rq=db.transaction(STATE_STORE,'readonly').objectStore(STATE_STORE).get(key);rq.onsuccess=()=>res(rq.result?rq.result.value:undefined);rq.onerror=()=>rej(rq.error);});}
+async function idbSetState(key,value){const db=await openDB();return new Promise((res,rej)=>{if(!db.objectStoreNames.contains(STATE_STORE)){res();return;}const tx=db.transaction(STATE_STORE,'readwrite');tx.objectStore(STATE_STORE).put({key,value});tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}
+async function persistCourses(d){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch(e){}try{await idbSetState('courses',d);}catch(e){console.error(e);}}
+async function loadPersistedCourses(){try{const fromIdb=await idbGetState('courses');if(Array.isArray(fromIdb))return fromIdb;}catch(e){}try{const r=localStorage.getItem(STORAGE_KEY);if(r){const p=JSON.parse(r);if(Array.isArray(p))return p;}}catch(e){}return null;}
+async function dbGetAll(gid){const db=await openDB();return new Promise((res,rej)=>{const rq=db.transaction(STORE_NAME,'readonly').objectStore(STORE_NAME).getAll();rq.onsuccess=()=>res((rq.result||[]).filter(i=>i.galleryId===gid).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)));rq.onerror=()=>rej(rq.error);});}
+async function dbAdd(img){const db=await openDB();return new Promise((r,j)=>{const tx=db.transaction(STORE_NAME,'readwrite');tx.objectStore(STORE_NAME).add(img);tx.oncomplete=()=>r(img);tx.onerror=()=>j(tx.error);});}
+async function dbUpdate(img){const db=await openDB();return new Promise((r,j)=>{const tx=db.transaction(STORE_NAME,'readwrite');tx.objectStore(STORE_NAME).put(img);tx.oncomplete=()=>r(img);tx.onerror=()=>j(tx.error);});}
+async function dbDel(id){const db=await openDB();return new Promise((r,j)=>{const tx=db.transaction(STORE_NAME,'readwrite');tx.objectStore(STORE_NAME).delete(id);tx.oncomplete=()=>r();tx.onerror=()=>j(tx.error);});}
+async function dbDelByGallery(gid){const imgs=await dbGetAll(gid);return Promise.all(imgs.map(i=>dbDel(i.id)));}
+async function dbGetAllExport(){const db=await openDB();return new Promise((r,j)=>{const rq=db.transaction(STORE_NAME,'readonly').objectStore(STORE_NAME).getAll();rq.onsuccess=()=>r(rq.result||[]);rq.onerror=()=>j(rq.error);});}
+async function dbReplaceAllExportImages(images){const db=await openDB();return new Promise((r,j)=>{const tx=db.transaction(STORE_NAME,'readwrite');const store=tx.objectStore(STORE_NAME);store.clear();(images||[]).forEach(img=>store.put(img));tx.oncomplete=()=>r();tx.onerror=()=>j(tx.error);});}
+
+const DEFAULT_DATA=[
+{id:"course-math2",title:"Math 2",doc:"Dr/Reda abdo , Dr/Ahmed nasr , Dr/Ahmed abdelkhalek , Dr/Asmaa",icon:"fa-calculator",color:"from-indigo-500 to-purple-600",image:"",type:"course",sections:[{id:"s1",name:"التكامل Ch1",badge:"مضاف",links:[{id:"l1",name:"Ch1 P1",url:"https://youtu.be/RUk95eJ8Plw?si=yg6AyUazfN9cUpbM"},{id:"l2",name:"Ch1 P2",url:"https://youtu.be/6uG9k8wlOrA?si=piqru17D5qBFzlQ9"},{id:"l3",name:"Ch1 P3",url:"https://youtu.be/h0EZCN25Sak?si=yMWB_4igllPhS57l"},{id:"l4",name:"Ch1 p4",url:"https://youtu.be/-ezqYc6djBw?si=v5x3ew9hiVRWYszv"}]},{id:"s2",name:"التكامل Ch2",badge:"مضاف",links:[{id:"l5",name:"Ch2 P1",url:"https://youtu.be/nSfcPUVTbk8?si=d1KkNvGA0xda0Y0z"},{id:"l6",name:"Ch2 P2",url:"https://youtu.be/O9gb6uGmTtg?si=tJXs1zQgjcioGqwC"},{id:"l7",name:"Ch2 P3",url:"https://youtu.be/y3aqHpdVQUQ?si=GvLZOtEQQl4R5HFX"},{id:"l8",name:"Ch2 P4",url:"https://youtu.be/7A-41Alxu0c?si=162ymCbKT8V2glOk"},{id:"l9",name:"Ch2 P5",url:"https://youtu.be/oeuLRftb93k?si=EQLPYcoaUnt08QqN"},{id:"l10",name:"Ch2 P6",url:"https://youtu.be/F0trVVlaEgY?si=w229jpH8w7zzeGj_"}]},{id:"s3",name:"التكامل Ch3",badge:"مضاف",links:[{id:"l11",name:"Ch3 P1",url:"https://youtu.be/Cuhu79alv6c?si=p7L_bqXOTUbb1O7J"},{id:"l12",name:"Ch3 P2",url:"https://youtu.be/MSTO6PsTPMQ?si=mRZO0MeajohtaW31"},{id:"l13",name:"Ch3 Rev",url:"https://youtu.be/NutJ4aEtEjk?si=5DEGbBsU70dsbaX0"}]},{id:"s4",name:"التكامل Ch4",badge:"مضاف",links:[{id:"l14",name:"Ch4 P1",url:"https://youtu.be/KbgRloxlC38?si=LT3QLUHw1ajbmv43"},{id:"l15",name:"Ch4 P2",url:"https://youtu.be/DjL4ugazGj8?si=8I9y7QgPNYTM4WNm"}]},{id:"s5",name:"التكامل Ch5",badge:"مضاف",links:[{id:"l16",name:"Ch5 P1",url:"https://youtu.be/XYMLrR-n7rI?si=6_DY3ecOySDlnZu5"},{id:"l17",name:"Ch5 P2",url:"https://youtu.be/E-OJMafTKYM?si=s2VrO3Epftq8Gk4p"},{id:"l18",name:"Ch5 P3",url:"https://youtu.be/cNSSLe8rdzk?si=inXC9jTAkTWDWS8t"}]},{id:"s6",name:"مراجعه سريعه على التكامل",badge:"مضاف",links:[{id:"l19",name:"دا لينك فيديو دكتور رضا (١٠دقايق ال لخص فيهم التكامل)",url:"https://youtu.be/2ThGgZEHT6Q?si=r8w-QjNBHay-PoBJ"}]},{id:"s7",name:"مراجعه على التكامل",badge:"مضاف",links:[{id:"l20",name:"Review",url:"https://youtu.be/l4HmJ1RxaVE?si=rbCMu3bKjxCWm3IE"}]},{id:"s8",name:"هندسة تحليلية Ch1",badge:"مضاف",links:[{id:"l21",name:"Ch1 P1",url:"https://youtu.be/81l8X4zqVaA?si=m4vZekgjeeeQ6v3H"},{id:"l22",name:"Ch1 P2",url:"https://youtu.be/HJA2-HcQbwI?si=GAoni4BfOrEohqz5"},{id:"l23",name:"Ch1 P3",url:"https://youtu.be/xxNfMtQdwhg?si=f-Ltb7xrJ3XUmHBq"},{id:"l24",name:"Ch1 P4",url:"https://youtu.be/KvNIgrO5PtQ?si=Pahws2jcFzxLHSCd"},{id:"l25",name:"Ch1 P5",url:"https://youtu.be/ylLeby9kb9I?si=9r7zEz3vGTbdXv16"},{id:"l26",name:"Ch1 P6",url:"https://youtu.be/E8I2-lPBF00?si=ea6izTEMe1F5-hlg"},{id:"l27",name:"Ch1 P7",url:"https://youtu.be/iIwUeb_pIrQ?si=DTV_j-WseQVtTY04"},{id:"l28",name:"Ch1 P8",url:"https://youtu.be/uTFZHIKkWHE?si=wgNFmmz3WUc_9cop"},{id:"l29",name:"Ch1 P9",url:"https://youtu.be/QGnZEc3sQrI?si=KjTXn4W4bonPlBaM"},{id:"l30",name:"Ch1 P10",url:"https://youtu.be/8HFALBaWoXU?si=ahijN-Be4thwMk4g"}]},{id:"s9",name:"هندسة تحليلية Ch2",badge:"مضاف",links:[{id:"l31",name:"Ch2",url:"https://youtu.be/U0MfBAivVkE?si=uHCeIr_OzNmKS9Me"}]},{id:"s10",name:"هندسة تحليلية Ch3",badge:"مضاف",links:[{id:"l32",name:"Ch3 P1 A",url:"https://youtu.be/iANaxzWVBb4?si=Aad8N-joymU9VtjW"},{id:"l33",name:"Ch3 P1 B",url:"https://youtu.be/jQummo3ejyY?si=O5mEflIyPbusFAjI"},{id:"l34",name:"Ch3 Section 1",url:"https://youtu.be/Ieffs8oDJUI?si=EZJaR5heiUCtow41"},{id:"l35",name:"Ch3 P2 A",url:"https://youtu.be/s463gKKP7Iw?si=wIeRDc1zYkITKcwV"},{id:"l36",name:"Ch3 P2 B",url:"https://youtu.be/RVzPlviYsZ4?si=vQWE80mCO_-UpdJv"},{id:"l37",name:"Ch3 Section2",url:"https://youtu.be/ynnSZjNyBzk?si=2gn-wKP639ooXqFE"},{id:"l38",name:"Ch3 P3 A",url:"https://youtu.be/dj_jI0uMLvg?si=89BE_YmNIzoaVNXj"},{id:"l39",name:"Ch3 P3 B",url:"https://youtu.be/I2i3At0QzvA?si=Jirvhh13RNVFurm1"}]},{id:"s11",name:"بلاي ليست سكاشن",badge:"مضاف",links:[{id:"l40",name:"بشمهندس اكرم",url:"https://youtube.com/playlist?list=PLLa-YTRWOBRxiLrCqvUvIiCBS4O011pFy&si=SFGQdejpzIAFhaUx"}]},{id:"s12",name:"درايف المادة",badge:"مضاف",links:[{id:"l41",name:"اضغط هنا",url:"https://drive.google.com/drive/folders/1i3M1OyHquCjVOVeCsyn1gTd6X_jhaNZk"}]}],notes:[{id:1773922984701,content:"الميدتيرم على شابتر ١ و ٢ و شابتر ٣ اول فيديوهين بس دا في التكامل \nالتحليلية معانا ال Parabola_ellipse_circle",createdAt:"2026-03-19T12:23:04.701Z",updatedAt:"2026-03-19T12:24:23.229Z"}]},
+{id:"course-physics2",title:"Physics 2",doc:"Dr/Marwa , Dr/EL-azab , Dr/Hany",icon:"fa-atom",color:"from-cyan-500 to-blue-600",image:"",type:"course",sections:[{id:"p1",name:"فيزياء كهربيه Chapter 1",badge:"مضاف",links:[{id:"pl1",name:"بلاي ليست Chapter 1 د/محمد اسماعيل",url:"https://youtube.com/playlist?list=PLD30uL4tqplGqcEvIb_lQkguEFvQ2XZKe&si=raQgBFXK6L3IzfON"},{id:"pl2",name:"Ch1 P1 د/مروة",url:"https://drive.google.com/file/d/170SyidffEaUtyrNza8eptji2vWH7Llsb/view?usp=sharing"},{id:"pl3",name:"Ch1 P2 د/مروة",url:"https://drive.google.com/file/d/1TVIl7jBcdbN1MXzomuuhoI9d0r_oS2Pt/view?usp=sharing"},{id:"pl4",name:"Chapter 1 د/العزب",url:"https://youtu.be/eLh1XlKZ2u0?si=Q_0CQhF_R5wnSPLC"},{id:"pl5",name:"Chapter 1 د/كمال عابدين",url:"https://youtu.be/P_y4yY13Lh0?si=1iaT8lWoB6OGyMHp"}]},{id:"p2",name:"فيزياء كهربيه Chapter 2",badge:"مضاف",links:[{id:"pl6",name:"بلاي ليست Chapter 2 د/محمد اسماعيل",url:"https://youtube.com/playlist?list=PLD30uL4tqplH5Lyg6V2VCZCs_CaEdXWA9&si=OKkDr5KaNHyrSrq8"},{id:"pl7",name:"Ch2 P1 د/مروة",url:"https://drive.google.com/file/d/1idJx4qc6ZaRRzq3ZX2o8VvOMoyxPm1Hb/view?usp=drive_link"},{id:"pl8",name:"Ch2 P2 د/مروة",url:"https://drive.google.com/file/d/1WvB3Kf4UduyHnaUbsmFay0B_ttqvQSmR/view?usp=sharing"},{id:"pl9",name:"Chapter 2 د/العزب",url:"https://youtu.be/PV6QRNmhNhc?si=w1Aii_-KW4_zjNjT"},{id:"pl10",name:"Chapter 2 د/كمال عابدين",url:"https://youtu.be/SYL1ysAJun4?si=1UZcf-TKYSj1PPOz"}]},{id:"p3",name:"فيزياء كهربيه Chapter 3",badge:"مضاف",links:[{id:"pl11",name:"بلاي ليست Chapter 3 د/محمد اسماعيل",url:"https://www.youtube.com/playlist?list=PLD30uL4tqplGpCUoUkZY6oPz7h_HnfuGB"},{id:"pl12",name:"Ch 3 د/مروة",url:"https://drive.google.com/file/d/1Jg0RA2OoTW3bwIu08EbsTyzdlnRJf0O3/view"},{id:"pl13",name:"Chapter 3 د/العزب",url:"https://youtu.be/BBI_22z6et0?si=cT4wiQNOLxbsMp2M"},{id:"pl14",name:"Chapter 3 د/كمال عابدين",url:"https://youtu.be/5myPT_PFfxw?si=PzXIw9YcRshipwz0"}]},{id:"p4",name:"فيزياء كهربيه Chapter 4",badge:"مضاف",links:[{id:"pl15",name:"بلاي ليست Chapter 4 د/محمد اسماعيل",url:"https://www.youtube.com/playlist?list=PLD30uL4tqplETtebIz-ZKd7OYx6qPGReW"},{id:"pl16",name:"Ch4 P1 د/مروة",url:"https://drive.google.com/file/d/1Gqk5S-JSf38rv4myIOKYB4LEfFhFl1dc/view"},{id:"pl17",name:"Ch4 P2 د/مروة",url:"https://drive.google.com/file/d/1ZgrJDy-T7cCCaUoVmICQ3TaFeZ9qmh2u/view"},{id:"pl18",name:"Chapter 4 د/العزب",url:"https://youtu.be/v1Jexw3pOVE?si=sJaI4z8o8PTIa4dK"},{id:"pl19",name:"Chapter 4 د/كمال عابدين",url:"https://youtu.be/PtxskNPKZiE?si=Ga5q0DsU3SfuYFUB"}]},{id:"p5",name:"مراجعة الكهربية",badge:"مضاف",links:[{id:"pl20",name:"Review د/مروة",url:"https://drive.google.com/file/d/1rFOsRLJadH9Y7msOEpjB5daaBsktV1uf/view?usp=sharing"}]},{id:"p6",name:"فيزياء ضوئية Chapter 1",badge:"مضاف",links:[{id:"pl21",name:"Chapter 1 م/محمد ناجي",url:"https://youtu.be/lQnbhu8Efjw?si=ZQf98PkjhVPjG28g"},{id:"pl22",name:"Ch1 د/مروة",url:"https://drive.google.com/file/d/18x_x7AIp9v0jqLTHFnMjQvO010Uq1Oy3/view"},{id:"pl23",name:"Ch1 د/كمال عابدين",url:"https://youtu.be/hzg-aVFD5p4?si=CeAbcB1NdVNLCH7Q"},{id:"pl24",name:"Ch1 د/محمد فرحات",url:"https://youtu.be/uao-bJJ6-0g?si=yLUpYXGhYpM08WXE"}]},{id:"p7",name:"فيزياء ضوئية Chapter 2",badge:"مضاف",links:[{id:"pl25",name:"Chapter 2 م/محمد ناجي",url:"https://youtu.be/Sh7Co_VTCpo?si=u9onfabEA47VtGcL"},{id:"pl26",name:"Ch 2 د/مروة",url:"https://drive.google.com/file/d/1C7kJOpV0SUKPKA80lTzNWjsu01jeWDNs/view"},{id:"pl27",name:"Ch2 د/العزب",url:"https://youtu.be/NCpCI82aOXE?si=eCj0fsaATyr_4_Pn"}]},{id:"p8",name:"فيزياء ضوئية Chapter 3",badge:"مضاف",links:[{id:"pl28",name:"Chapter3 د/محمد اسماعيل",url:"https://youtu.be/F-mCZPaxrKc?si=IuK2OKlpsXzWsXfU"},{id:"pl29",name:"Ch 3 د/مروة",url:"https://drive.google.com/file/d/1Eb3IWfJNZx4WJ1yBZBpw5DcqOS49lEan/view"},{id:"pl30",name:"Ch3 P1 د/هاني",url:"https://youtu.be/Gd3gJDx7GvY?si=lxZcTkTXTIPK83YN"},{id:"pl31",name:"Ch3 P2 د/هاني",url:"https://youtu.be/WM_DKHAwGuU?si=l3RIJNIjbRYGn8Cb"},{id:"pl32",name:"Ch3 P1 د/عابد",url:"https://youtu.be/CFLHTeAh4HU?si=ZkkieNVAugtDUKoZ"},{id:"pl33",name:"Ch3 P2 د/عابد",url:"https://youtu.be/J7_s36GFERU?si=1Y0bgyGc9jAkVGWl"},{id:"pl34",name:"Ch3 P1 د/محمد فرحات",url:"https://youtu.be/3b969zGCk-Q?si=9pJ0kdq8vTo9_raf"},{id:"pl35",name:"Ch3 P2 د/محمد فرحات",url:"https://youtu.be/tgVGa_gkj20?si=tyV3L5nkk5Ob_JTz"},{id:"pl36",name:"Ch3 P3 د/محمد فرحات",url:"https://youtu.be/YgYPgGWFz0w?si=I5nNu3JHNwQ4Uq0N"},{id:"pl37",name:"Ch3 P4 د/محمد فرحات",url:"https://youtu.be/W7zQc9Nuqi0?si=F1riuIEpG6kGE1Lm"}]},{id:"p9",name:"فيزياء ضوئية Chapter 4",badge:"مضاف",links:[{id:"pl38",name:"Chapter 4 د/محمد اسماعيل",url:"https://youtu.be/MowPj7PBz7o?si=8NHBoizm3lax7Kft"},{id:"pl39",name:"Ch4 P1 د/مروة",url:"https://drive.google.com/file/d/1ZzD5izHVo-C7fbH_TqIouBqnfv6llybc/view?usp=sharing"},{id:"pl40",name:"Ch4 P2 د/مروة",url:"https://drive.google.com/file/d/1_7eworjskAJmTEcRbiIPv9Nblonl5OeJ/view?usp=drive_link"},{id:"pl41",name:"Ch4 د/هاني",url:"https://youtu.be/4Sk3870qpJU?si=GXCvJ1QUOxlpzA3Q"},{id:"pl42",name:"Ch4 د/محمد فرحات",url:"https://youtu.be/3tzOfa3eeDA?si=O_GjqiGSAZ2Fz_iE"}]},{id:"p10",name:"مراجعة الضوئية",badge:"مضاف",links:[{id:"pl43",name:"Review د/مروة",url:"https://drive.google.com/file/d/1rHW3bRBFP_X_gmNfUBK_1U3h3wRUxxMV/view?usp=sharing"}]},{id:"p11",name:"تجارب عمليه",badge:"مضاف",links:[{id:"pl44",name:"1- قانون اووم",url:"https://drive.google.com/file/d/1oN2JY6QISkwlwlQptRvoD9Wyd9jzKyal/view?usp=sharing"},{id:"pl45",name:"2- الشحن الاستاتيكي",url:"https://drive.google.com/file/d/1PVFPZSHMWkW_QVxhpujyItIkdw-xLt-K/view?usp=drivesdk"},{id:"pl46",name:"3- تجربة تعيين معامل انكسار منشور زجاجي",url:"https://youtu.be/TY7_n5wQ0ow?si=PvZ6zgKTT1Tgztqv"},{id:"pl47",name:"4- الاستقطاب",url:"https://drive.google.com/file/d/1a0xyfhmnk0DrHgiT1ASB0C7W7g2fIFfX/view?usp=drivesdk"}]},{id:"p12",name:"درايف المادة",badge:"مضاف",links:[{id:"pl48",name:"اضغط هنا",url:"https://drive.google.com/drive/folders/1GFTjGVWGfIQ29N_1sqFnUavzok6CQjmf"}]}],notes:[{id:1773374241142,content:"البلاي ليست بتاعت الاربع شباتر بتوع الكهربيه بتاعت د/محمد اسماعيل اتفرج على اول ١٠ فيديوهات بس منهم ما عدا شابتر ٢ اول ٨ بس .",createdAt:"2026-03-13T03:57:21.142Z"},{id:1773917531713,content:"الميدتيرم على ٣ شباتر ضوئية واول شابتر كهربية",createdAt:"2026-03-19T10:52:11.713Z"}]},
+{id:"course-mechanics2",title:"Mechanics 2",doc:"Dr/Walid , Dr/Hanafy , Dr/Barakat",icon:"fa-cogs",color:"from-orange-500 to-red-500",image:"",type:"course",sections:[{id:"m1",name:"Ch1 Frame",badge:"مضاف",links:[{id:"ml1",name:"شرح د / رضا عبده",url:"https://youtu.be/knAzMUiDJRY?si=3wnm5bwrrB6cUVvD"},{id:"ml2",name:"شرح د / احمد ذكي",url:"https://youtu.be/WHrQX53ePwg?si=ha5HI_7R5skZoOrL"},{id:"ml3",name:"شرح د/حسين السيد",url:"https://youtu.be/EiVjduNotVs?si=DyijVCySaBMfB_xF"}]},{id:"m2",name:"Ch2 Centroid",badge:"مضاف",links:[{id:"ml4",name:"Part 1 د/ رضا عبده",url:"https://youtu.be/M8X7l1JpODY?si=lb8CNiFODuEVKobZ"},{id:"ml5",name:"Part 2 د/ رضا عبده",url:"https://youtu.be/oCjmBuhz9j0?si=C9ZXsZ_Jb2IQrTE4"},{id:"ml6",name:"Part 3 د/ رضا عبده",url:"https://youtu.be/shQ3i7lSdwo?si=1C5bziUcho60kJZB"},{id:"ml7",name:"Part 4 د/ رضا عبده",url:"https://youtu.be/bnndEDsuWgE?si=t-XjQc2cIS1MWCfZ"},{id:"ml8",name:"Part 1 د/ وليد البشبيشي",url:"https://youtu.be/J9OmPbcNK4I?si=5DQH3lKka6BcUpg0"},{id:"ml9",name:"Part 2 د/ وليد البشبيشي",url:"https://youtu.be/dfYm_fdnXQ4?si=e1BV7QNorkpkjdYU"},{id:"ml10",name:"د/ احمد ذكي",url:"https://youtu.be/vZxpRUWU-kE?si=8T6NddxQNH5e1gBE"},{id:"ml11",name:"د/حسين السيد",url:"https://youtu.be/fVStm-4Bufg?si=l8I3QXRzTLb_wKC-"}]},{id:"m3",name:"Ch3 distribution force",badge:"مضاف",links:[{id:"ml12",name:"The first lecture د/وليد البشبيشي",url:"https://youtu.be/bKpYEV-T6cQ?si=Ceu52ryuEIMmxGXZ"},{id:"ml13",name:"The first section",url:"https://youtu.be/u3yiIKxLJTs?si=4adVlu2ogxoszX0Q"},{id:"ml14",name:"The second lecture د/وليد البشبيشي",url:"https://youtu.be/lbP2reG7t8M?si=SUathA8Rp9dq7H4k"},{id:"ml15",name:"The second section",url:"https://youtu.be/nVPk7QRV8go?si=xl1ZgX5097oHDWQT"},{id:"ml16",name:"جامعة المنصورة",url:"https://www.youtube.com/watch?v=xAH-45mcJSg"}]},{id:"m4",name:"Ch4 Fraction",badge:"مضاف",links:[{id:"ml17",name:"Part1 د/وليد البشبيشي",url:"https://youtu.be/3o6tm9QmC0c?si=8s_umcCIVdXXQ-g7"},{id:"ml18",name:"section on part 1",url:"https://youtu.be/5XOwlX_q4vk?si=SX2dJvQLBwLxmLdM"},{id:"ml19",name:"Part 2 a د/وليد البشبيشي",url:"https://youtu.be/PkXOC6xoXhA?si=HWqtIPGCahDaj5DJ"},{id:"ml20",name:"Part2 b د/وليد البشبيشي",url:"https://youtu.be/yW1B6C71eZE?si=qKg87t2_PZkoWnCz"},{id:"ml21",name:"د/السيد بركات",url:"https://drive.google.com/file/d/1PzaCM1agmWH3r6dfXNxJ1r3_8J6kOzJW/view?usp=drivesdk"},{id:"ml22",name:"د/احمد ذكي",url:"https://youtu.be/u39WkCWyzWE?si=XkPKylturVuZPgGZ"},{id:"ml23",name:"Wedges P1",url:"https://youtu.be/kn1P3GIX1aE?si=SZnPnht4OorjJ-MB"},{id:"ml24",name:"Wedges P2",url:"https://youtu.be/ueDcMveCgGA?si=LjcUs7Sdrhap7uCa"},{id:"ml25",name:"Wedges P3",url:"https://youtu.be/iZsB0CXg-rk?si=d-U06o6E6E3HaGk4"},{id:"ml26",name:"Screws P1",url:"https://youtu.be/-AaiZkOdobA?si=eWwqutBwLXhrsHRL"},{id:"ml27",name:"Screws P2",url:"https://youtu.be/iOtmfRqXNyc?si=hU6KD9t5UGkDaAMk"}]},{id:"m5",name:"Ch5 ديناميكا",badge:"مضاف",links:[{id:"ml28",name:"من البدايه + الاحداثيات الكارتيزية",url:"https://youtu.be/lNYt_fktVPw?si=SAxxOzKKtt7crIKI"},{id:"ml29",name:"tangent and normal",url:"https://youtu.be/3CaO83ZfbAU?si=Lb8ibRVrCGzQFev0"},{id:"ml30",name:"Polar Coordinates",url:"https://youtu.be/6SLV4XTNmyQ?si=r7Mm_0IZlTjMedRN"},{id:"ml31",name:"Curvilinear motion Projectiles د/احمد ذكي",url:"https://www.youtube.com/watch?v=CY9fzWxKOU0"},{id:"ml32",name:"شرح د/حسين السيد",url:"https://www.youtube.com/watch?v=Ycd_jw_xHWw"}]},{id:"m6",name:"درايف المادة",badge:"مضاف",links:[{id:"ml33",name:"اضغط هنا",url:"https://drive.google.com/drive/folders/1ZIz34nBePIKcNAfk6-JEeItVoL8wCstF"}]}],notes:[{id:1773917491339,content:"الميدتيرم على اول ٣ شباتر",createdAt:"2026-03-19T10:51:31.339Z"}]},
+{id:"course-drawing",title:"Engineering Drawing",doc:"Dr/Shbara , Dr/Tawakol , Dr/El-eraky",icon:"fa-drafting-compass",color:"from-emerald-500 to-teal-600",image:"",type:"course",sections:[{id:"d1",name:"بلاي ليست محاضارات د.توكل",badge:"مضاف",links:[{id:"dl1",name:"د.توكل",url:"https://youtube.com/playlist?list=PLjtgayhnDHtwCTTjb3c5YIYlNAglOLxgi&si=aHnMk4c5wj7Byygx"}]},{id:"d2",name:"بلاي ليست محاضرات د.محمد الأشهب",badge:"مضاف",links:[{id:"dl2",name:"د.محمد الأشهب",url:"https://youtube.com/playlist?list=PL8eBCmLQBwYvMru-1kmuOXxb-8Bz_UYQn&si=WpMdjOcpvdvRuX0H"}]},{id:"d3",name:"بلاي ليست سكاشن",badge:"مضاف",links:[{id:"dl3",name:"بشمهندس فوزي",url:"https://www.youtube.com/@EngineeringDrawing9/playlists"}]},{id:"d4",name:"مراجعة الميدتيرم",badge:"مضاف",links:[{id:"dl4",name:"part 1",url:"https://youtu.be/LgEn3Twffg0?si=wsPCAFYXMnShcx3z"}]},{id:"d5",name:"درايف المادة",badge:"مضاف",links:[{id:"dl5",name:"اضغط هنا",url:"https://drive.google.com/drive/folders/1XXP8xNj3Z4SGc1hCCrPhAbg22HVShx8z"}]}],notes:[{id:1773917593371,content:"الميدتيرم لحد المساقط فقط \n(mcq,مساقط و مماسات)",createdAt:"2026-03-19T10:53:13.371Z"}]},
+{id:"course-production",title:"Production",doc:"Dr/Ossama Abouelatta , Dr/Magdy , Dr/Mohamed keran",icon:"fa-industry",color:"from-violet-500 to-purple-700",image:"",type:"course",sections:[{id:"pr1",name:"بلاي ليست محاضرات د/اسامه",badge:"مضاف",links:[{id:"prl1",name:"اضغط للفتح",url:"https://youtube.com/playlist?list=PLlzDSScHK9w75WdBXRAJZ1iMpTepshWEw&si=V2p8nZBqyArYLYI2"}]},{id:"pr2",name:"ورش انتاج",badge:"مضاف",links:[{id:"prl2",name:"ورشة لحام",url:"https://youtu.be/yJQJP1gILuo?si=whEeDXs2IrLAMssy"},{id:"prl3",name:"ورشة صاج",url:"https://youtu.be/cwGvDr6E8ag?si=7sjk2y_FPuwHpHdX"},{id:"prl4",name:"ورشة نماذج",url:"https://youtu.be/emz--dLHjF4?si=wkqMREkBuqvKXVxw"},{id:"prl5",name:"ورشة كهرباء",url:"https://youtu.be/8OxtPybsgDQ?si=Rj8X64mBZaWNbwLo"},{id:"prl6",name:"ورشة برادة",url:"https://youtu.be/wdr2gwLBnpY?si=7YNN_gB1sBZgeg8X"},{id:"prl7",name:"ورشة سباكة",url:"https://youtu.be/TAPbLj8zZ6I?si=i13jC8Uh6e1utKHz"},{id:"prl8",name:"ورشة الحدادة",url:"https://youtu.be/sxtxA9Bn3Iw?si=XPRjOSzWykZ6uFpK"},{id:"prl9",name:"ورشة الماكينات",url:"https://youtu.be/wthgXmqjrt4?si=q7GwFDYMp74-K8M"}]}],notes:[]},
+{id:"course-cprog",title:"Programming with C",doc:"Dr/Ahmed Saleh , Dr/Mahmoud Saafan, Dr/Hanaa, Dr/Eman",icon:"fa-code",color:"from-sky-500 to-indigo-600",image:"",type:"course",sections:[{id:"c1",name:"شرح د / احمد صالح",badge:"مضاف",links:[{id:"cl1",name:"Source",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fmagedy%5Fstd%5Fmans%5Fedu%5Feg%2FDocuments%2F%D9%85%D8%AD%D8%A7%D8%B6%D8%B1%D8%A7%D8%AA%20%D8%A7%D8%B9%D8%AF%D8%A7%D8%AF%D9%8A%20%D8%A7%D9%84%D8%AA%D8%B1%D9%85%20%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A%2F%D8%A8%D8%B1%D9%85%D8%AC%D9%85%D8%A9%D8%8C%20%D8%A3%D8%AD%D9%85%D8%AF%20%D8%B5%D8%A7%D9%84%D8%AD"},{id:"cl2",name:"Lecture 1",url:"https://drive.google.com/drive/folders/1DwHhkMiJ5KZ07yrgY2HSv09MOBOxPAax"},{id:"cl3",name:"Lecture 2",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl4",name:"Lecture 3",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl5",name:"Lecture 4",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl6",name:"Lecture 5",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl7",name:"Lecture 6",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl8",name:"Lecture 7",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl9",name:"Lecture 8",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl10",name:"Lecture 9",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"},{id:"cl11",name:"Lecture 10",url:"https://medmansedu-my.sharepoint.com/personal/magedy_std_mans_edu_eg/_layouts/15/stream.aspx"}]},{id:"c2",name:"شرح د / محمود سعفان",badge:"مضاف",links:[{id:"cl12",name:"اضغط للفتح",url:"https://youtube.com/playlist?list=PLqhlDoXCm-cgptnBxMpiHfRI_CsNCDf45&si=Vc26kvrUNN_APwwx"}]},{id:"c3",name:"فولدر سكاشن",badge:"مضاف",links:[{id:"cl13",name:"اضغط للفتح",url:"https://drive.google.com/drive/folders/1raNAZNe39aM6t5BOoQ9GLqF711Mb3sQB"}]},{id:"c4",name:"درايف المادة",badge:"مضاف",links:[{id:"cl14",name:"اضغط هنا",url:"https://drive.google.com/drive/folders/13WRt7dP7A05InBXNhjXBB2L5Bx8_PdLe"}]}],notes:[{id:1774265313920,content:"الميد تيرم على اول ٥ محاضرات لدكتور احمد صالح \nواول ٦ محاضرات لدكتور محمود سعفان",createdAt:"2026-03-23T11:28:33.920Z"}]},
+{id:"course-social",title:"القضايا المجتمعية المعاصرة",doc:"Dr/Mohammed ElHelaly",icon:"fa-globe",color:"from-amber-500 to-orange-600",image:"",type:"course",sections:[{id:"so1",name:"درايف المادة",badge:"مضاف",links:[{id:"sol1",name:"اضغط للفتح",url:"https://drive.google.com/drive/folders/1nYGx7i_lUoP-Ws5MtyzJVgLFMy3xi8yd"}]}],notes:[]},
+{id:"course-drives",title:"Drives",doc:"درايف الدفعه",icon:"fa-hard-drive",color:"from-green-500 to-emerald-600",image:"",type:"course",sections:[{id:"dr1",name:"Drive level 0",badge:"مضاف",links:[{id:"drl1",name:"اضغط للفتح",url:"https://drive.google.com/drive/folders/1H_S2BpWhiIdpSRf_JghoLOlEyhUal_85"}]}],notes:[]},
+{id:"course-turtle",title:"حلول سلحفية",doc:"Magdy_Turtle",icon:"fa-lightbulb",color:"from-pink-500 to-rose-600",image:"",type:"course",sections:[{id:"t1",name:"حلول ميكانيكا",badge:"مضاف",links:[{id:"tl1",name:"Turtle(MID {2023-2025}).pdf",url:"https://drive.google.com/file/d/1CRiglIHAX4K-agkQ_2DtjZGA3DbMKnLG/view?usp=sharing"},{id:"tl2",name:"Pedri_Fluid_Statics_Problems.pdf",url:"https://drive.google.com/file/d/1-sxN9Pkin824KWpghwCvI7DU625SVh-V/view?usp=sharing"},{id:"tl3",name:"CH9_KINEMATICS_Ice_Turtle",url:"https://drive.google.com/file/d/17R9Uaa1-ycYIxZIv_ZWRYFlbCRJ1GHHB/view?usp=sharing"}]},{id:"t2",name:"حلول فيزياء كهربية",badge:"مضاف",links:[{id:"tl4",name:"Turtle_answers_ch3_electricity",url:"https://drive.google.com/file/d/1Ypwa4Vl0tsXVNZifPnB3yonXUFdMxXLM/view?usp=sharing"}]}],notes:[]},
+{id:"course-raouf",title:"بصمجيات رؤوف",doc:"عمي وعم عيالي الدكتور رؤوف",icon:"fa-star",color:"from-red-500 to-pink-600",image:"",type:"course",sections:[{id:"r1",name:"بصمجيات الانتاج",badge:"مضاف",links:[{id:"rl1",name:"بصمجيات عمو رؤوف لشفوي الانتاج",url:"https://drive.google.com/file/d/1ODsHAxHIEKmCBDt9liSIgjfDsLIHCMMw/view?usp=drive_link"}]}],notes:[]},
+{id:"course-communist",title:"الملخصات الاشتراكية للقضاء على الرأسمالية",doc:"comrade general ice cube",icon:"fa-book-open",color:"from-red-600 to-rose-700",image:"",type:"course",sections:[{id:"com1",name:"ملخصات برمجه",badge:"مضاف",links:[{id:"coml1",name:"Ice and Steell in the art of C-1",url:"https://drive.google.com/file/d/1CNbLya514Bn67HL1M1YFjMr5gi8Ear3l/view?usp=drive_link"}]}],notes:[{id:1778161536493,content:"غير مسموح بدخول اصحاب القلوب الضعيفه والنفسيات الهشه واتباع الرأسمالية",createdAt:"2026-05-07T13:45:36.493Z"}]},
+{id:"course-duck",title:"ملخصات بطوط",doc:"🦆",icon:"fa-feather",color:"from-yellow-500 to-amber-600",image:"",type:"course",sections:[{id:"duck1",name:"ملخص ورش انتاج",badge:"مضاف",links:[{id:"duckl1",name:"Ducks's Revision 🦆-1",url:"https://drive.google.com/file/d/16gCqc8LeBcz_3uPvbVsN6f4EnBRuKiHd/view?usp=drive_link"}]}],notes:[]},
+];
+
+function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(r){const p=JSON.parse(r);if(Array.isArray(p))return p;}}catch(e){}return DEFAULT_DATA;}
+function saveData(d){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch(e){}/* IndexedDB persistence is handled by persistCourses */}
+
+// Toast
+function ToastContainer({toasts,removeToast}){return(<div className="fixed top-4 left-4 z-[99999] flex flex-col gap-2" style={{maxWidth:'320px'}}>{toasts.map(t=>(<div key={t.id} className={`toast-in flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-white text-sm font-medium cursor-pointer ${t.type==='success'?'bg-gradient-to-r from-emerald-500 to-teal-600':t.type==='error'?'bg-gradient-to-r from-red-500 to-rose-600':'bg-gradient-to-r from-indigo-500 to-purple-600'}`} onClick={()=>removeToast(t.id)}><i className={`fa ${t.type==='success'?'fa-check-circle':t.type==='error'?'fa-times-circle':'fa-info-circle'} text-lg`}></i><span>{t.message}</span></div>))}</div>);}
+
+// Modal
+function Modal({isOpen,onClose,title,children,size='md'}){
+useEffect(()=>{if(isOpen)document.body.style.overflow='hidden';else document.body.style.overflow='';return()=>{document.body.style.overflow=''};},[isOpen]);
+if(!isOpen)return null;
+const sc=size==='sm'?'max-w-md':size==='lg'?'max-w-2xl':size==='xl'?'max-w-4xl':'max-w-lg';
+return ReactDOM.createPortal((<div style={{position:'fixed',inset:0,zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',padding:'1rem'}} onClick={onClose}><div style={{position:'fixed',inset:0,width:'100vw',height:'100vh',background:'rgba(0,0,0,0.5)',backdropFilter:'blur(12px)',WebkitBackdropFilter:'blur(12px)'}}></div><div className={`${sc} bg-white dark:bg-gray-900 shadow-2xl border border-gray-200 dark:border-gray-700 modal-animate`} style={{position:'relative',zIndex:10,width:'100%',maxHeight:'85vh',overflowY:'auto',borderRadius:'1rem'}} onClick={e=>e.stopPropagation()}><div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-500/10 to-purple-500/10"><h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3><button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"><i className="fa fa-times"></i></button></div><div className="p-6">{children}</div></div></div>),document.body);}
+
+function ConfirmModal({isOpen,onClose,onConfirm,title,message,confirmText='حذف'}){return(<Modal isOpen={isOpen} onClose={onClose} title={title} size="sm"><p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{message}</p><div className="flex gap-3 justify-end"><button onClick={onClose} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium">إلغاء</button><button onClick={()=>{onConfirm();onClose();}} className="px-4 py-2 rounded-xl text-white font-medium bg-red-500 hover:bg-red-600">{confirmText}</button></div></Modal>);}
+
+function InputModal({isOpen,onClose,onConfirm,title,label,placeholder,initialValue=''}){
+const[val,setVal]=useState(initialValue);
+useEffect(()=>{if(isOpen)setVal(initialValue);},[isOpen,initialValue]);
+const hc=()=>{if(val.trim()){onConfirm(val.trim());onClose();}};
+return(<Modal isOpen={isOpen} onClose={onClose} title={title} size="sm"><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{label}</label><input value={val} onChange={e=>setVal(e.target.value)} placeholder={placeholder} onKeyDown={e=>{if(e.key==='Enter')hc();}} autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/><div className="flex gap-3 justify-end mt-4"><button onClick={onClose} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={hc} className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:opacity-90">تأكيد</button></div></Modal>);}
+
+// LinkItem
+function LinkItem({link,index,totalLinks,onEdit,onDelete,onMoveUp,onMoveDown}){
+return(<div className="flex items-center gap-2 group py-1.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50"><div className="flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity"><button onClick={e=>{e.preventDefault();e.stopPropagation();onMoveUp();}} disabled={index===0} className="move-btn bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400"><i className="fa fa-chevron-up"></i></button><button onClick={e=>{e.preventDefault();e.stopPropagation();onMoveDown();}} disabled={index===totalLinks-1} className="move-btn bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400"><i className="fa fa-chevron-down"></i></button></div><i className={`${getLinkIcon(link.url)} ${getLinkColor(link.url)} text-sm w-4 flex-shrink-0`}></i><a href={link.url} target="_blank" rel="noopener noreferrer" className="flex-1 text-sm text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 truncate">{link.name}</a><div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"><button onClick={e=>{e.preventDefault();e.stopPropagation();onEdit(link);}} className="w-6 h-6 flex items-center justify-center rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-500"><i className="fa fa-pen text-xs"></i></button><button onClick={e=>{e.preventDefault();e.stopPropagation();onDelete(link.id);}} className="w-6 h-6 flex items-center justify-center rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 text-red-500"><i className="fa fa-trash text-xs"></i></button></div></div>);}
+
+// SectionItem
+function SectionItem({section,sectionIndex,totalSections,onUpdate,showToast}){
+const[collapsed,setCollapsed]=useState(false);
+const[editLinkModal,setEditLinkModal]=useState(null);
+const[addLinkModal,setAddLinkModal]=useState(false);
+const[deleteLinkId,setDeleteLinkId]=useState(null);
+const[editNameModal,setEditNameModal]=useState(false);
+const[addLinkName,setAddLinkName]=useState('');
+const[addLinkUrl,setAddLinkUrl]=useState('');
+const[editLinkName,setEditLinkName]=useState('');
+const[editLinkUrl,setEditLinkUrl]=useState('');
+
+const handleMoveLink=(lid,dir)=>{const ls=[...(section.links||[])];const i=ls.findIndex(x=>x.id===lid);if(i===-1)return;const ni=dir==='up'?i-1:i+1;if(ni<0||ni>=ls.length)return;[ls[i],ls[ni]]=[ls[ni],ls[i]];onUpdate({...section,links:ls});};
+
+return(<div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden mb-3 relative group/section">
+<div className="flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-gray-800/80 cursor-pointer select-none" onClick={()=>setCollapsed(!collapsed)}>
+<div className="flex flex-col gap-0.5 opacity-0 group-hover/section:opacity-100 transition-opacity"><button onClick={e=>{e.stopPropagation();onUpdate({...section,_move:'up'});}} disabled={sectionIndex===0} className="move-btn bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400"><i className="fa fa-chevron-up"></i></button><button onClick={e=>{e.stopPropagation();onUpdate({...section,_move:'down'});}} disabled={sectionIndex===totalSections-1} className="move-btn bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400"><i className="fa fa-chevron-down"></i></button></div>
+<i className={`fa fa-chevron-${collapsed?'left':'down'} text-xs text-gray-400`}></i>
+<span className="flex-1 font-semibold text-gray-800 dark:text-white text-sm">{section.name}</span>
+<span className="text-xs text-indigo-500 bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 rounded-full">{(section.links||[]).length} رابط</span>
+<div className="flex gap-1" onClick={e=>e.stopPropagation()}>
+<button onClick={()=>setEditNameModal(true)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-500"><i className="fa fa-pen text-xs"></i></button>
+<button onClick={()=>{setAddLinkName('');setAddLinkUrl('');setAddLinkModal(true);}} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-500"><i className="fa fa-plus text-xs"></i></button>
+<button onClick={()=>onUpdate({...section,_delete:true})} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 text-red-500"><i className="fa fa-trash text-xs"></i></button>
+</div>
+</div>
+{!collapsed&&<div className="px-2 py-2 bg-white dark:bg-gray-900">{(section.links||[]).length===0?<p className="text-center text-sm text-gray-400 py-3">لا توجد روابط</p>:(section.links||[]).map((link,idx)=><LinkItem key={link.id} link={link} index={idx} totalLinks={section.links.length} onEdit={l=>{setEditLinkModal(l);setEditLinkName(l.name);setEditLinkUrl(l.url);}} onDelete={id=>setDeleteLinkId(id)} onMoveUp={()=>handleMoveLink(link.id,'up')} onMoveDown={()=>handleMoveLink(link.id,'down')}/>)}</div>}
+
+<Modal isOpen={addLinkModal} onClose={()=>setAddLinkModal(false)} title="➕ إضافة رابط" size="sm"><div className="flex flex-col gap-4"><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">اسم الرابط *</label><input value={addLinkName} onChange={e=>setAddLinkName(e.target.value)} placeholder="مثال: شرح الفصل الأول" autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">الرابط (URL) *</label><input value={addLinkUrl} onChange={e=>setAddLinkUrl(e.target.value)} placeholder="https://" dir="ltr" className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div className="flex gap-3 justify-end"><button onClick={()=>setAddLinkModal(false)} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={()=>{if(!addLinkName.trim()||!addLinkUrl.trim()){showToast('يرجى ملء جميع الحقول','error');return;}onUpdate({...section,links:[...(section.links||[]),{id:uid(),name:addLinkName.trim(),url:addLinkUrl.trim()}]});setAddLinkName('');setAddLinkUrl('');setAddLinkModal(false);showToast('تم إضافة الرابط ✓','success');}} className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium hover:opacity-90">إضافة</button></div></div></Modal>
+
+<Modal isOpen={!!editLinkModal} onClose={()=>setEditLinkModal(null)} title="✏️ تعديل الرابط" size="sm"><div className="flex flex-col gap-4"><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">اسم الرابط *</label><input value={editLinkName} onChange={e=>setEditLinkName(e.target.value)} autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">الرابط (URL) *</label><input value={editLinkUrl} onChange={e=>setEditLinkUrl(e.target.value)} dir="ltr" className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div className="flex gap-3 justify-end"><button onClick={()=>setEditLinkModal(null)} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={()=>{if(!editLinkName.trim()||!editLinkUrl.trim())return;onUpdate({...section,links:section.links.map(l=>l.id===editLinkModal.id?{...l,name:editLinkName.trim(),url:editLinkUrl.trim()}:l)});setEditLinkModal(null);showToast('تم تعديل الرابط ✓','success');}} className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:opacity-90">حفظ</button></div></div></Modal>
+
+<ConfirmModal isOpen={!!deleteLinkId} onClose={()=>setDeleteLinkId(null)} onConfirm={()=>{onUpdate({...section,links:section.links.filter(l=>l.id!==deleteLinkId)});setDeleteLinkId(null);showToast('تم حذف الرابط ✓','success');}} title="🗑️ حذف الرابط" message="هل أنت متأكد من حذف هذا الرابط؟" confirmText="نعم، احذف"/>
+<InputModal isOpen={editNameModal} onClose={()=>setEditNameModal(false)} onConfirm={n=>{onUpdate({...section,name:n});showToast('تم تعديل اسم القسم ✓','success');}} title="✏️ تعديل اسم القسم" label="اسم القسم الجديد" placeholder="اسم القسم..." initialValue={section.name}/>
+</div>);}
+
+// NoteCard - uses inline styles for colors to avoid Tailwind conflicts
+function NoteCard({note,onDelete,onStartEdit,noteStyle}){
+const date=new Date(note.updatedAt||note.createdAt);
+return(<div className="rounded-2xl p-4 shadow-md relative group transition-all hover:shadow-lg hover:-translate-y-1" style={{minHeight:'120px',background:noteStyle.bg,color:noteStyle.color}}><p style={{color:'inherit',fontSize:'0.875rem',fontWeight:500,lineHeight:1.7,whiteSpace:'pre-wrap',wordBreak:'break-word',paddingBottom:'1.5rem',margin:0}}>{note.content}</p><div style={{position:'absolute',bottom:'0.75rem',left:'0.75rem',right:'0.75rem',display:'flex',alignItems:'center',justifyContent:'space-between'}}><span style={{color:'inherit',opacity:0.6,fontSize:'0.75rem'}}>{date.toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'})}</span><div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><button onClick={()=>onStartEdit(note)} style={{width:'24px',height:'24px',display:'flex',alignItems:'center',justifyContent:'center',borderRadius:'0.375rem',background:'rgba(255,255,255,0.5)',border:'none',cursor:'pointer'}}><i className="fa fa-pen" style={{fontSize:'0.65rem',color:'#374151'}}></i></button><button onClick={()=>onDelete(note.id)} style={{width:'24px',height:'24px',display:'flex',alignItems:'center',justifyContent:'center',borderRadius:'0.375rem',background:'rgba(255,255,255,0.5)',border:'none',cursor:'pointer'}}><i className="fa fa-trash" style={{fontSize:'0.65rem',color:'#dc2626'}}></i></button></div></div>
+</div>);}
+
+// GalleryDetail
+function GalleryDetail({course,onBack,onUpdate,showToast}){
+const[images,setImages]=useState([]);
+const[loading,setLoading]=useState(true);
+const[lightbox,setLightbox]=useState(null);
+const[editImg,setEditImg]=useState(null);
+const[editImgTitle,setEditImgTitle]=useState('');
+const[editImgDesc,setEditImgDesc]=useState('');
+const[delImgId,setDelImgId]=useState(null);
+const[clearAll,setClearAll]=useState(false);
+const[editModal,setEditModal]=useState(false);
+const[editTitle,setEditTitle]=useState(course.title);
+const[editDoc,setEditDoc]=useState(course.doc);
+const[dragOver,setDragOver]=useState(false);
+const fileRef=useRef(null);
+const coverRef=useRef(null);
+
+useEffect(()=>{let alive=true;(async()=>{try{setLoading(true);if(window.__SNAPSHOT_IMPORT_PROMISE__){await window.__SNAPSHOT_IMPORT_PROMISE__;}const imgs=await dbGetAll(course.id);if(alive)setImages(imgs);}catch(e){if(alive)showToast('خطأ في تحميل الصور','error');}finally{if(alive)setLoading(false);}})();return()=>{alive=false;};},[course.id]);
+
+const handleMoveImage=async(imgId,dir)=>{const idx=images.findIndex(i=>i.id===imgId);if(idx===-1)return;const ni=dir==='up'?idx-1:idx+1;if(ni<0||ni>=images.length)return;const newImgs=[...images];[newImgs[idx],newImgs[ni]]=[newImgs[ni],newImgs[idx]];const now=new Date();newImgs.forEach((img,i)=>{img.createdAt=new Date(now.getTime()-i).toISOString();});setImages(newImgs);for(const img of newImgs){await dbUpdate(img);}showToast('تم تغيير الترتيب ✓','success');};
+
+const handleFiles=async files=>{
+if(!files||files.length===0)return;
+const proms=Array.from(files).filter(f=>f.type.startsWith('image/')).map(file=>new Promise((res,rej)=>{const reader=new FileReader();reader.onload=async e=>{try{const d={id:uid(),galleryId:course.id,data:e.target.result,title:file.name.replace(/\.[^/.]+$/,""),description:'',createdAt:new Date().toISOString(),size:file.size,type:file.type};await dbAdd(d);res(d);}catch(err){rej(err);}};reader.onerror=()=>rej(reader.error);reader.readAsDataURL(file);}));
+try{const added=await Promise.all(proms);setImages(prev=>[...added,...prev]);showToast(`تم رفع ${added.length} صورة ✓`,'success');}catch(e){showToast('خطأ في رفع بعض الصور','error');}
+};
+
+return(<div className="fade-in">
+<button onClick={onBack} className="flex items-center gap-2 text-indigo-500 hover:text-indigo-700 font-medium mb-4 group"><i className="fa fa-arrow-right group-hover:translate-x-1 transition-transform"></i><span>العودة للرئيسية</span></button>
+<div className={`bg-gradient-to-l ${course.color||'from-pink-500 to-rose-600'} rounded-2xl p-6 text-white shadow-lg relative overflow-hidden mb-6`}>
+<input type="file" ref={coverRef} accept="image/*" onChange={e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{onUpdate({...course,image:ev.target.result});showToast('تم تغيير الصورة ✓','success');};r.readAsDataURL(f);}} className="hidden"/>
+{course.image&&<div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage:`url(${course.image})`}}></div>}
+<div className="relative flex items-start justify-between gap-4">
+<div className="flex items-center gap-4">
+<div onClick={()=>coverRef.current?.click()} className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl overflow-hidden cursor-pointer hover:bg-white/30">{course.image?<img src={course.image} alt="" className="w-full h-full object-cover rounded-2xl"/>:<i className={`fa ${course.icon||'fa-images'}`}></i>}</div>
+<div><h1 className="text-2xl font-bold">{course.title}</h1><p className="text-white/80 text-sm mt-1">{course.doc}</p><div className="flex gap-4 mt-2 text-sm text-white/70"><span><i className="fa fa-image ml-1"></i>{images.length} صورة</span></div></div>
+</div>
+<div className="flex items-center gap-2 flex-shrink-0">
+<button onClick={()=>coverRef.current?.click()} className="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center"><i className="fa fa-image text-sm"></i></button>
+<button onClick={()=>{setEditTitle(course.title);setEditDoc(course.doc||'');setEditModal(true);}} className="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center"><i className="fa fa-pen text-sm"></i></button>
+</div>
+</div>
+</div>
+
+<div className={`upload-zone mb-6 ${dragOver?'dragover':''}`} onDrop={e=>{e.preventDefault();setDragOver(false);handleFiles(e.dataTransfer.files);}} onDragOver={e=>{e.preventDefault();setDragOver(true);}} onDragLeave={()=>setDragOver(false)} onClick={()=>fileRef.current?.click()}>
+<input type="file" ref={fileRef} accept="image/*" multiple onChange={e=>handleFiles(e.target.files)} className="hidden"/>
+<div className="text-indigo-500 mb-3"><i className="fa fa-cloud-upload-alt text-4xl"></i></div>
+<p className="text-gray-700 dark:text-gray-300 font-semibold">اسحب الصور هنا أو اضغط للاختيار</p>
+<p className="text-gray-400 text-sm mt-1">يمكنك رفع عدة صور في نفس الوقت</p>
+</div>
+
+{images.length>0&&<div className="flex justify-end mb-4"><button onClick={()=>setClearAll(true)} className="flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-200 text-sm font-medium"><i className="fa fa-trash"></i> حذف جميع الصور</button></div>}
+
+{loading?<div className="text-center py-16"><div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p className="text-gray-400">جاري تحميل الصور...</p></div>
+:images.length===0?<div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-300 dark:border-gray-600"><div className="w-20 h-20 bg-pink-50 dark:bg-pink-900/20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl text-pink-300"><i className="fa fa-images"></i></div><p className="text-gray-400 font-medium">لا توجد صور في المعرض</p></div>
+:<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:'0.75rem',width:'100%'}}>{images.map((img,imgIdx)=><div key={img.id} style={{position:'relative',width:'100%',paddingBottom:'100%',borderRadius:'1rem',overflow:'hidden',cursor:'pointer',transition:'all 0.3s'}} onClick={()=>setLightbox(img)} onMouseEnter={e=>{e.currentTarget.querySelector('.g-ov').style.opacity='1';e.currentTarget.style.transform='scale(1.02)';e.currentTarget.style.boxShadow='0 10px 40px rgba(0,0,0,0.2)';}} onMouseLeave={e=>{e.currentTarget.querySelector('.g-ov').style.opacity='0';e.currentTarget.style.transform='scale(1)';e.currentTarget.style.boxShadow='none';}}><img src={img.data} alt={img.title} loading="lazy" style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',objectFit:'cover',display:'block'}}/><div className="g-ov" style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',background:'linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%)',opacity:0,transition:'opacity 0.3s',zIndex:2}}><div style={{position:'absolute',bottom:0,left:0,right:0,padding:'0.75rem'}}><p style={{color:'#fff',fontWeight:600,fontSize:'0.875rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',margin:0}}>{img.title}</p>{img.description&&<p style={{color:'rgba(255,255,255,0.7)',fontSize:'0.75rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',margin:0}}>{img.description}</p>}</div><div style={{position:'absolute',top:'0.5rem',left:'0.5rem',display:'flex',gap:'0.25rem'}}><button onClick={e=>{e.stopPropagation();handleMoveImage(img.id,'up');}} disabled={imgIdx===0} style={{width:'28px',height:'28px',background:imgIdx===0?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.9)',borderRadius:'0.4rem',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:imgIdx===0?'not-allowed':'pointer',color:'#2563eb',fontSize:'0.65rem'}}><i className="fa fa-arrow-right"></i></button><button onClick={e=>{e.stopPropagation();handleMoveImage(img.id,'down');}} disabled={imgIdx===images.length-1} style={{width:'28px',height:'28px',background:imgIdx===images.length-1?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.9)',borderRadius:'0.4rem',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:imgIdx===images.length-1?'not-allowed':'pointer',color:'#2563eb',fontSize:'0.65rem'}}><i className="fa fa-arrow-left"></i></button><button onClick={e=>{e.stopPropagation();setEditImg(img);setEditImgTitle(img.title);setEditImgDesc(img.description||'');}} style={{width:'28px',height:'28px',background:'rgba(255,255,255,0.9)',borderRadius:'0.4rem',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:'pointer',color:'#4f46e5',fontSize:'0.65rem'}}><i className="fa fa-pen"></i></button><button onClick={e=>{e.stopPropagation();setDelImgId(img.id);}} style={{width:'28px',height:'28px',background:'rgba(255,255,255,0.9)',borderRadius:'0.4rem',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:'pointer',color:'#dc2626',fontSize:'0.65rem'}}><i className="fa fa-trash"></i></button></div></div></div>)}</div>}
+
+{lightbox&&<div style={{position:'fixed',top:0,left:0,right:0,bottom:0,zIndex:99999,background:'rgba(0,0,0,0.95)',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setLightbox(null)}><button style={{position:'absolute',top:'1rem',left:'1rem',width:'40px',height:'40px',background:'rgba(255,255,255,0.2)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:'pointer',color:'#fff',fontSize:'1.25rem',zIndex:10}} onClick={()=>setLightbox(null)}><i className="fa fa-times"></i></button><div style={{position:'absolute',bottom:'1rem',left:'1rem',right:'1rem',textAlign:'center'}}><p style={{color:'#fff',fontWeight:600,margin:0}}>{lightbox.title}</p>{lightbox.description&&<p style={{color:'rgba(255,255,255,0.7)',fontSize:'0.875rem',margin:0}}>{lightbox.description}</p>}</div><img src={lightbox.data} alt={lightbox.title} style={{maxWidth:'90vw',maxHeight:'90vh',objectFit:'contain',borderRadius:'0.5rem'}} onClick={e=>e.stopPropagation()}/></div>}
+
+<Modal isOpen={!!editImg} onClose={()=>setEditImg(null)} title="✏️ تعديل الصورة" size="sm"><div className="flex flex-col gap-4">{editImg&&<div className="w-full h-40 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800"><img src={editImg.data} alt="" className="w-full h-full object-contain"/></div>}<div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">عنوان الصورة</label><input value={editImgTitle} onChange={e=>setEditImgTitle(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">الوصف</label><textarea value={editImgDesc} onChange={e=>setEditImgDesc(e.target.value)} rows={3} className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none resize-none"/></div><div className="flex gap-3 justify-end"><button onClick={()=>setEditImg(null)} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={async()=>{if(!editImg)return;const u={...editImg,title:editImgTitle.trim(),description:editImgDesc.trim()};await dbUpdate(u);setImages(prev=>prev.map(i=>i.id===u.id?u:i));setEditImg(null);showToast('تم تعديل الصورة ✓','success');}} className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:opacity-90">حفظ</button></div></div></Modal>
+
+<ConfirmModal isOpen={!!delImgId} onClose={()=>setDelImgId(null)} onConfirm={async()=>{await dbDel(delImgId);setImages(prev=>prev.filter(i=>i.id!==delImgId));setDelImgId(null);showToast('تم حذف الصورة ✓','success');}} title="🗑️ حذف الصورة" message="هل أنت متأكد؟" confirmText="نعم، احذف"/>
+<ConfirmModal isOpen={clearAll} onClose={()=>setClearAll(false)} onConfirm={async()=>{await dbDelByGallery(course.id);setImages([]);setClearAll(false);showToast('تم حذف جميع الصور ✓','success');}} title="🗑️ حذف الكل" message="هل أنت متأكد من حذف جميع الصور؟" confirmText="نعم، احذف الكل"/>
+
+<Modal isOpen={editModal} onClose={()=>setEditModal(false)} title="✏️ تعديل بيانات المعرض" size="sm"><div className="flex flex-col gap-4"><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">اسم المعرض *</label><input value={editTitle} onChange={e=>setEditTitle(e.target.value)} autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">الوصف</label><input value={editDoc} onChange={e=>setEditDoc(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div className="flex gap-3 justify-end mt-2"><button onClick={()=>setEditModal(false)} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={()=>{if(!editTitle.trim()){showToast('الاسم مطلوب','error');return;}onUpdate({...course,title:editTitle.trim(),doc:editDoc.trim()});setEditModal(false);showToast('تم التحديث ✓','success');}} className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:opacity-90">حفظ</button></div></div></Modal>
+</div>);}
+
+// CourseDetail
+function CourseDetail({course,onBack,onUpdate,showToast,darkMode}){
+const[activeTab,setActiveTab]=useState('sections');
+const[addSectionModal,setAddSectionModal]=useState(false);
+const[addNoteModal,setAddNoteModal]=useState(false);
+const[newNote,setNewNote]=useState('');
+const[deleteSectionId,setDeleteSectionId]=useState(null);
+const[editModal,setEditModal]=useState(false);
+const[editTitle,setEditTitle]=useState(course.title);
+const[editDoc,setEditDoc]=useState(course.doc);
+const[editNoteModal,setEditNoteModal]=useState(null);
+const[editNoteContent,setEditNoteContent]=useState('');
+const fileRef=useRef(null);
+const totalLinks=(course.sections||[]).reduce((a,s)=>a+(s.links||[]).length,0);
+
+const handleUpdateSection=updated=>{
+let ns=[...(course.sections||[])];
+const idx=ns.findIndex(s=>s.id===updated.id);
+if(idx===-1)return;
+if(updated._move==='up'&&idx>0){[ns[idx],ns[idx-1]]=[ns[idx-1],ns[idx]];showToast('تم تحريك القسم ✓','info');}
+else if(updated._move==='down'&&idx<ns.length-1){[ns[idx],ns[idx+1]]=[ns[idx+1],ns[idx]];showToast('تم تحريك القسم ✓','info');}
+else if(updated._delete){setDeleteSectionId(updated.id);return;}
+else{ns[idx]=updated;}
+ns=ns.map(s=>{const{_move,_delete,...r}=s;return r;});
+onUpdate({...course,sections:ns});
+};
+
+return(<div className="fade-in">
+<button onClick={onBack} className="flex items-center gap-2 text-indigo-500 hover:text-indigo-700 font-medium mb-4 group"><i className="fa fa-arrow-right group-hover:translate-x-1 transition-transform"></i><span>العودة للرئيسية</span></button>
+<div className={`bg-gradient-to-l ${course.color||'from-indigo-500 to-purple-600'} rounded-2xl p-6 text-white shadow-lg relative overflow-hidden mb-6`}>
+<input type="file" ref={fileRef} accept="image/*" onChange={e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{onUpdate({...course,image:ev.target.result});showToast('تم تغيير الصورة ✓','success');};r.readAsDataURL(f);}} className="hidden"/>
+{course.image&&<div className="absolute inset-0 opacity-20 bg-cover bg-center" style={{backgroundImage:`url(${course.image})`}}></div>}
+<div className="relative flex items-start justify-between gap-4">
+<div className="flex items-center gap-4">
+<div onClick={()=>fileRef.current?.click()} className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl overflow-hidden cursor-pointer hover:bg-white/30">{course.image?<img src={course.image} alt="" className="w-full h-full object-cover rounded-2xl"/>:<i className={`fa ${course.icon||'fa-book'}`}></i>}</div>
+<div><h1 className="text-2xl font-bold">{course.title}</h1><p className="text-white/80 text-sm mt-1">{course.doc}</p><div className="flex gap-4 mt-2 text-sm text-white/70"><span><i className="fa fa-layer-group ml-1"></i>{(course.sections||[]).length} قسم</span><span><i className="fa fa-link ml-1"></i>{totalLinks} رابط</span><span><i className="fa fa-sticky-note ml-1"></i>{(course.notes||[]).length} ملاحظة</span></div></div>
+</div>
+<div className="flex items-center gap-2 flex-shrink-0"><button onClick={()=>fileRef.current?.click()} className="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center"><i className="fa fa-image text-sm"></i></button><button onClick={()=>{setEditTitle(course.title);setEditDoc(course.doc||'');setEditModal(true);}} className="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center"><i className="fa fa-pen text-sm"></i></button></div>
+</div>
+</div>
+
+<div className="flex gap-2 mb-6">
+<button onClick={()=>setActiveTab('sections')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm ${activeTab==='sections'?'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md':'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700'}`}><i className="fa fa-layer-group"></i> الأقسام والروابط</button>
+<button onClick={()=>setActiveTab('notes')} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm ${activeTab==='notes'?'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md':'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700'}`}><i className="fa fa-sticky-note"></i> الملاحظات ({course.notes?.length||0})</button>
+</div>
+
+{activeTab==='sections'&&<div>
+<div className="flex items-center justify-between mb-4"><h2 className="text-lg font-bold text-gray-800 dark:text-white">📁 الأقسام</h2><button onClick={()=>setAddSectionModal(true)} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:opacity-90 font-medium text-sm shadow-md"><i className="fa fa-plus"></i> إضافة قسم</button></div>
+{(course.sections||[]).length===0?<div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-300 dark:border-gray-600"><div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl text-gray-300"><i className="fa fa-folder-open"></i></div><p className="text-gray-400 font-medium">لا توجد أقسام بعد</p></div>
+:course.sections.map((sec,idx)=><SectionItem key={sec.id} section={sec} sectionIndex={idx} totalSections={course.sections.length} onUpdate={handleUpdateSection} showToast={showToast}/>)}
+</div>}
+
+{activeTab==='notes'&&<div>
+<div className="flex items-center justify-between mb-4"><h2 className="text-lg font-bold text-gray-800 dark:text-white">📝 الملاحظات</h2><button onClick={()=>{setNewNote('');setAddNoteModal(true);}} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl hover:opacity-90 font-medium text-sm shadow-md"><i className="fa fa-plus"></i> ملاحظة جديدة</button></div>
+{(course.notes||[]).length===0?<div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-300 dark:border-gray-600"><div className="w-20 h-20 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl text-amber-300"><i className="fa fa-sticky-note"></i></div><p className="text-gray-400 font-medium">لا توجد ملاحظات</p></div>
+:<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">{course.notes.map((n,i)=>{const ns=darkMode?NOTE_COLORS_DARK[i%NOTE_COLORS_DARK.length]:NOTE_COLORS_LIGHT[i%NOTE_COLORS_LIGHT.length];return <NoteCard key={n.id} note={n} noteStyle={ns} onDelete={id=>{onUpdate({...course,notes:course.notes.filter(x=>x.id!==id)});showToast('تم حذف الملاحظة ✓','success');}} onStartEdit={n=>{setEditNoteModal(n);setEditNoteContent(n.content);}}/>;})}</div>}
+</div>}
+
+<Modal isOpen={!!editNoteModal} onClose={()=>setEditNoteModal(null)} title="📝 تعديل الملاحظة" size="sm"><textarea value={editNoteContent} onChange={e=>setEditNoteContent(e.target.value)} rows={5} autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none resize-none"/><div className="flex gap-3 justify-end mt-4"><button onClick={()=>setEditNoteModal(null)} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={()=>{if(editNoteContent.trim()&&editNoteModal){onUpdate({...course,notes:course.notes.map(x=>x.id===editNoteModal.id?{...x,content:editNoteContent.trim(),updatedAt:new Date().toISOString()}:x)});setEditNoteModal(null);showToast('تم تعديل الملاحظة ✓','success');}}} className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:opacity-90">حفظ</button></div></Modal>
+
+<InputModal isOpen={addSectionModal} onClose={()=>setAddSectionModal(false)} onConfirm={name=>{onUpdate({...course,sections:[...(course.sections||[]),{id:uid(),name,badge:'مضاف',links:[]}]});showToast(`تم إضافة قسم "${name}" ✓`,'success');}} title="📂 إضافة قسم جديد" label="اسم القسم *" placeholder="مثال: محاضرات..."/>
+<Modal isOpen={addNoteModal} onClose={()=>setAddNoteModal(false)} title="📝 إضافة ملاحظة" size="sm"><textarea value={newNote} onChange={e=>setNewNote(e.target.value)} rows={5} autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none resize-none"/><div className="flex gap-3 justify-end mt-4"><button onClick={()=>setAddNoteModal(false)} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={()=>{if(!newNote.trim()){showToast('اكتب الملاحظة','error');return;}onUpdate({...course,notes:[...(course.notes||[]),{id:Date.now(),content:newNote.trim(),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}]});setNewNote('');setAddNoteModal(false);showToast('تم إضافة الملاحظة ✓','success');}} className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-medium hover:opacity-90">إضافة</button></div></Modal>
+<ConfirmModal isOpen={!!deleteSectionId} onClose={()=>setDeleteSectionId(null)} onConfirm={()=>{onUpdate({...course,sections:course.sections.filter(s=>s.id!==deleteSectionId)});setDeleteSectionId(null);showToast('تم حذف القسم ✓','success');}} title="🗑️ حذف القسم" message="هل أنت متأكد؟" confirmText="نعم، احذف"/>
+<Modal isOpen={editModal} onClose={()=>setEditModal(false)} title="✏️ تعديل بيانات المقرر" size="sm"><div className="flex flex-col gap-4"><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">الاسم *</label><input value={editTitle} onChange={e=>setEditTitle(e.target.value)} autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">الوصف</label><input value={editDoc} onChange={e=>setEditDoc(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div><div className="flex gap-3 justify-end mt-2"><button onClick={()=>setEditModal(false)} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={()=>{if(!editTitle.trim()){showToast('الاسم مطلوب','error');return;}onUpdate({...course,title:editTitle.trim(),doc:editDoc.trim()});setEditModal(false);showToast('تم التحديث ✓','success');}} className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:opacity-90">حفظ</button></div></div></Modal>
+</div>);}
+
+// CourseCard
+function CourseCard({course,onClick,onDelete,index,totalCourses,onMoveUp,onMoveDown}){
+const isGallery=course.type==='gallery';
+const totalLinks=isGallery?0:(course.sections||[]).reduce((a,s)=>a+(s.links||[]).length,0);
+const colorClass=course.color||COURSE_COLORS[index%COURSE_COLORS.length];
+return(<div className="card-hover cursor-pointer group relative rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-xl" onClick={onClick}>
+<div className={`h-2 bg-gradient-to-r ${colorClass}`}></div>
+<div className="p-5">
+<div className="flex items-start justify-between mb-4">
+<div className={`w-12 h-12 bg-gradient-to-br ${colorClass} rounded-2xl flex items-center justify-center text-white text-xl shadow-md overflow-hidden`}>{course.image?<img src={course.image} alt="" className="w-full h-full object-cover"/>:<i className={`fa ${course.icon||COURSE_ICONS[index%COURSE_ICONS.length]}`}></i>}</div>
+<div className="flex items-center gap-1">
+<button onClick={e=>{e.stopPropagation();onMoveUp();}} disabled={index===0} className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500 opacity-0 group-hover:opacity-100 disabled:opacity-25"><i className="fa fa-chevron-up text-xs"></i></button>
+<button onClick={e=>{e.stopPropagation();onMoveDown();}} disabled={index===totalCourses-1} className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-500 opacity-0 group-hover:opacity-100 disabled:opacity-25"><i className="fa fa-chevron-down text-xs"></i></button>
+<button onClick={e=>{e.stopPropagation();onDelete(course.id);}} className="w-7 h-7 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100"><i className="fa fa-trash text-xs"></i></button>
+</div>
+</div>
+<div className="flex items-center gap-2 mb-1">{isGallery&&<span className="text-xs bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 px-2 py-0.5 rounded-full font-medium">معرض صور</span>}<h3 className="font-bold text-gray-800 dark:text-white text-base leading-tight">{course.title}</h3></div>
+<p className="text-xs text-gray-500 dark:text-gray-400 mb-4 leading-relaxed line-clamp-2">{course.doc}</p>
+<div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-700 pt-3">{isGallery?<span className="flex items-center gap-1"><i className="fa fa-images text-pink-400"></i><span>معرض صور</span></span>:<><span className="flex items-center gap-1"><i className="fa fa-layer-group text-indigo-400"></i><span>{(course.sections||[]).length} قسم</span></span><span className="flex items-center gap-1"><i className="fa fa-link text-cyan-400"></i><span>{totalLinks} رابط</span></span>{(course.notes||[]).length>0&&<span className="flex items-center gap-1 mr-auto"><i className="fa fa-sticky-note text-amber-400"></i><span>{course.notes.length}</span></span>}</>}</div>
+</div>
+</div>);}
+
+// AddModal
+function AddModal({isOpen,onClose,onAdd}){
+const[mode,setMode]=useState('course');
+const[title,setTitle]=useState('');
+const[doc,setDoc]=useState('');
+const[icon,setIcon]=useState('fa-book');
+const[color,setColor]=useState(COURSE_COLORS[0]);
+const[image,setImage]=useState('');
+const fRef=useRef(null);
+useEffect(()=>{if(isOpen){setMode('course');setTitle('');setDoc('');setIcon('fa-book');setColor(COURSE_COLORS[0]);setImage('');}},[isOpen]);
+
+return(<Modal isOpen={isOpen} onClose={onClose} title="➕ إضافة جديد" size="md"><div className="flex flex-col gap-4">
+<div className="flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1">
+<button onClick={()=>{setMode('course');setIcon('fa-book');}} className={`flex-1 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 ${mode==='course'?'bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 shadow-sm':'text-gray-500 hover:text-gray-700'}`}><i className="fa fa-book"></i> مقرر دراسي</button>
+<button onClick={()=>{setMode('gallery');setIcon('fa-images');}} className={`flex-1 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 ${mode==='gallery'?'bg-white dark:bg-gray-700 text-pink-600 dark:text-pink-400 shadow-sm':'text-gray-500 hover:text-gray-700'}`}><i className="fa fa-images"></i> معرض صور</button>
+</div>
+<div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{mode==='gallery'?'اسم المعرض *':'اسم المقرر *'}</label><input value={title} onChange={e=>setTitle(e.target.value)} placeholder={mode==='gallery'?'مثال: صور المحاضرات':'مثال: رياضيات 3'} autoFocus className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div>
+<div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{mode==='gallery'?'الوصف':'الدكاترة / الوصف'}</label><input value={doc} onChange={e=>setDoc(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"/></div>
+<div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">صورة (اختياري)</label><input type="file" ref={fRef} accept="image/*" onChange={e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>setImage(ev.target.result);r.readAsDataURL(f);}} className="hidden"/><div className="flex items-center gap-3"><button onClick={()=>fRef.current?.click()} className="px-4 py-2 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 text-gray-500 hover:border-indigo-400 hover:text-indigo-500 text-sm"><i className="fa fa-upload ml-2"></i> اختر صورة</button>{image&&<img src={image} alt="" className="w-10 h-10 rounded-xl object-cover"/>}</div></div>
+<div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">الأيقونة</label><div className="grid grid-cols-8 gap-2">{COURSE_ICONS.map(ic=><button key={ic} onClick={()=>setIcon(ic)} className={`h-10 rounded-xl flex items-center justify-center ${icon===ic?'bg-indigo-500 text-white shadow-md':'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-indigo-100'}`}><i className={`fa ${ic}`}></i></button>)}</div></div>
+<div><label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">اللون</label><div className="grid grid-cols-5 gap-2">{COURSE_COLORS.map(c=><button key={c} onClick={()=>setColor(c)} className={`h-8 rounded-xl bg-gradient-to-r ${c} ${color===c?'ring-2 ring-indigo-500 ring-offset-2 scale-110':'hover:scale-105'}`}></button>)}</div></div>
+<div className="flex gap-3 justify-end mt-2 pt-2 border-t border-gray-100 dark:border-gray-700"><button onClick={onClose} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium">إلغاء</button><button onClick={()=>{if(!title.trim())return;onAdd({id:uid(),title:title.trim(),doc:doc.trim(),icon,color,image,type:mode,sections:[],notes:[]});onClose();}} disabled={!title.trim()} className="px-6 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed">➕ إضافة</button></div>
+</div></Modal>);}
+
+// HomeView
+function HomeView({courses,onSelectCourse,onDeleteCourse,onAddCourse,onMoveCourse,showToast}){
+const[search,setSearch]=useState('');
+const[addModal,setAddModal]=useState(false);
+const[deleteId,setDeleteId]=useState(null);
+const filtered=courses.filter(c=>c.title.toLowerCase().includes(search.toLowerCase())||(c.doc||'').toLowerCase().includes(search.toLowerCase()));
+
+return(<div className="fade-in">
+<div className="flex flex-col sm:flex-row gap-3 mb-8"><div className="relative flex-1"><i className="fa fa-search absolute top-1/2 -translate-y-1/2 right-4 text-gray-400 text-sm"></i><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍 ابحث عن مقرر أو معرض..." className="w-full pr-11 pl-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none shadow-sm"/></div><button onClick={()=>setAddModal(true)} className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl hover:opacity-90 shadow-md font-semibold whitespace-nowrap"><i className="fa fa-plus"></i> إضافة جديد</button></div>
+<div className="grid grid-cols-3 gap-3 mb-8">{[{label:'المقررات',value:courses.filter(c=>c.type!=='gallery').length,icon:'fa-book',color:'from-indigo-500 to-purple-600'},{label:'المعارض',value:courses.filter(c=>c.type==='gallery').length,icon:'fa-images',color:'from-pink-500 to-rose-600'},{label:'الروابط',value:courses.reduce((a,c)=>a+(c.sections||[]).reduce((b,s)=>b+(s.links||[]).length,0),0),icon:'fa-link',color:'from-emerald-500 to-teal-600'}].map(s=><div key={s.label} className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700"><div className={`w-9 h-9 bg-gradient-to-br ${s.color} rounded-xl flex items-center justify-center text-white mb-2`}><i className={`fa ${s.icon} text-sm`}></i></div><div className="text-2xl font-bold text-gray-800 dark:text-white">{s.value}</div><div className="text-xs text-gray-500 dark:text-gray-400 font-medium">{s.label}</div></div>)}</div>
+{filtered.length===0?<div className="text-center py-20"><div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl text-gray-300"><i className={search?'fa fa-search':'fa fa-graduation-cap'}></i></div><p className="text-gray-400 font-semibold text-lg">{search?'❌ لا توجد نتائج':'📚 لا توجد مقررات'}</p></div>
+:<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{filtered.map(course=>{const ri=courses.findIndex(c=>c.id===course.id);return<CourseCard key={course.id} course={course} index={ri} totalCourses={courses.length} onClick={()=>onSelectCourse(course.id)} onDelete={id=>setDeleteId(id)} onMoveUp={()=>onMoveCourse(ri,'up')} onMoveDown={()=>onMoveCourse(ri,'down')}/>;})}</div>}
+<AddModal isOpen={addModal} onClose={()=>setAddModal(false)} onAdd={c=>{onAddCourse(c);showToast(`تم إضافة "${c.title}" ✓`,'success');}}/>
+<ConfirmModal isOpen={!!deleteId} onClose={()=>setDeleteId(null)} onConfirm={()=>{onDeleteCourse(deleteId);setDeleteId(null);showToast('تم الحذف ✓','success');}} title="🗑️ حذف" message="هل أنت متأكد من الحذف؟ لا يمكن التراجع!" confirmText="نعم، احذف"/>
+</div>);}
+
+// Export
+async function exportSnapshot(courses,darkMode){
+let allImages=[];
+try{allImages=await dbGetAllExport();}catch(e){console.error(e);}
+const SE='<'+'/'+'script>';
+const STE='<'+'/'+'style>';
+const styleNodes=Array.from(document.querySelectorAll('style'));
+const customStyle=styleNodes.find(s=>!s.type&&s.textContent&&s.textContent.indexOf('dot-pattern')!==-1)||styleNodes.find(s=>!s.type&&s.textContent&&s.textContent.indexOf("font-family:'Cairo'")!==-1)||document.querySelector('style:not([type])');
+const cssText=customStyle?customStyle.textContent:'';
+const jsCode=document.querySelector('script[type="text/babel"]').textContent;
+const parts=[];
+parts.push('<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n<title>مكتبة مواد قسم هندسة القوى الميكانيكية</title>\n<link rel="icon" href="favicone.png">');
+parts.push('<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />');
+parts.push('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />');
+parts.push('<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4">'+SE);
+parts.push('<style type="text/tailwindcss">@custom-variant dark (&:where(.dark, .dark *));'+STE);
+parts.push('<script src="https://unpkg.com/react@18/umd/react.development.js">'+SE);
+parts.push('<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js">'+SE);
+parts.push('<script src="https://unpkg.com/@babel/standalone/babel.min.js">'+SE);
+parts.push('<style>'+cssText+STE);
+parts.push('<script>');
+const snapId=Date.now();
+parts.push('window.__SNAPSHOT_STORAGE_KEY__='+JSON.stringify('study_resources_snapshot_'+snapId)+';');
+parts.push('window.__SNAPSHOT_DB_NAME__='+JSON.stringify('GalleryDB_snapshot_'+snapId)+';');
+parts.push('window.__SNAPSHOT_DATA__='+JSON.stringify(courses)+';');
+parts.push('window.__SNAPSHOT_IMAGES__='+JSON.stringify(allImages)+';');
+parts.push('window.__SNAPSHOT_DARK__='+darkMode+';');
+parts.push('window.__HIDE_EXPORT__=true;');
+// Apply dark class immediately (before React) so dark styles match the main site on first paint
+if(darkMode){parts.push('try{document.documentElement.classList.add("dark");}catch(e){}');}
+parts.push(SE);
+parts.push('</head>\n<body>\n<div id="root"></div>');
+parts.push('<script type="text/babel">'+jsCode+SE);
+parts.push('</body>\n</html>');
+const blob=new Blob([parts.join('\n')],{type:'text/html;charset=utf-8'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;a.download='library-'+new Date().toISOString().slice(0,10)+'.html';
+document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+// MAIN APP
+function App(){
+const[courses,setCourses]=useState(()=>{
+// Sync first paint: localStorage → snapshot → defaults (IDB applied in bootstrap)
+try{const existing=localStorage.getItem(STORAGE_KEY);if(existing){const parsed=JSON.parse(existing);if(Array.isArray(parsed))return parsed;}}catch(e){}
+if(window.__SNAPSHOT_DATA__)return window.__SNAPSHOT_DATA__;
+return loadData();
+});
+const[bootstrapped,setBootstrapped]=useState(false);
+const[selectedCourseId,setSelectedCourseId]=useState(null);
+const[darkMode,setDarkMode]=useState(()=>{
+try{const saved=localStorage.getItem('darkMode_v2');if(saved!==null){window.__SNAPSHOT_DARK__=null;return saved==='true';}}catch(e){}
+if(window.__SNAPSHOT_DARK__!==undefined){const v=window.__SNAPSHOT_DARK__;window.__SNAPSHOT_DARK__=null;return v;}
+return false;
+});
+const[toasts,setToasts]=useState([]);
+const hideExport=window.__HIDE_EXPORT__===true;
+
+// Bootstrap: prefer IndexedDB (reliable across reloads), seed snapshot only once
+useEffect(()=>{
+let alive=true;
+(async()=>{
+try{
+const persisted=await loadPersistedCourses();
+if(persisted){
+// Already have saved edits/state — never re-import embedded snapshot
+if(alive)setCourses(persisted);
+try{localStorage.setItem(STORAGE_KEY,JSON.stringify(persisted));}catch(e){}
+}else if(window.__SNAPSHOT_DATA__){
+// First open of this snapshot file: seed courses + gallery images once
+const d=window.__SNAPSHOT_DATA__;
+if(window.__SNAPSHOT_IMAGES__){
+const snapshotImages=[...window.__SNAPSHOT_IMAGES__];
+window.__SNAPSHOT_IMPORT_PROMISE__=dbReplaceAllExportImages(snapshotImages).catch(()=>{});
+await window.__SNAPSHOT_IMPORT_PROMISE__;
+}
+await persistCourses(d);
+if(alive)setCourses(d);
+}else{
+// Original site path with no prior IDB: keep current state and persist it
+await persistCourses(courses);
+}
+}catch(e){console.error('bootstrap error',e);}
+finally{
+window.__SNAPSHOT_DATA__=null;
+window.__SNAPSHOT_IMAGES__=null;
+if(alive)setBootstrapped(true);
+}
+})();
+return()=>{alive=false;};
+// eslint-disable-next-line react-hooks/exhaustive-deps
+},[]);
+
+useEffect(()=>{const h=window.location.hash.slice(1);if(h&&courses.find(c=>c.id===h))setSelectedCourseId(h);},[]);
+useEffect(()=>{if(selectedCourseId)window.location.hash=selectedCourseId;else if(window.location.hash)history.pushState('',document.title,window.location.pathname+window.location.search);},[selectedCourseId]);
+useEffect(()=>{const fn=()=>{const h=window.location.hash.slice(1);if(h&&courses.find(c=>c.id===h))setSelectedCourseId(h);else setSelectedCourseId(null);};window.addEventListener('hashchange',fn);return()=>window.removeEventListener('hashchange',fn);},[courses]);
+// Persist every change AFTER bootstrap so we never overwrite saved state with defaults
+useEffect(()=>{if(!bootstrapped)return;persistCourses(courses);},[courses,bootstrapped]);
+// Apply dark class immediately on first render (not only after effect) for consistent contrast
+if(typeof document!=='undefined'){if(darkMode)document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');}
+useEffect(()=>{try{localStorage.setItem('darkMode_v2',darkMode);}catch(e){}if(darkMode)document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');},[darkMode]);
+
+const showToast=useCallback((message,type='info')=>{const id=Date.now()+Math.random();setToasts(t=>[...t,{id,message,type}]);setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),3500);},[]);
+const removeToast=useCallback(id=>{setToasts(t=>t.filter(x=>x.id!==id));},[]);
+const selectedCourse=courses.find(c=>c.id===selectedCourseId);
+const handleMoveCourse=(idx,dir)=>{const arr=[...courses];const ni=dir==='up'?idx-1:idx+1;if(ni<0||ni>=arr.length)return;[arr[idx],arr[ni]]=[arr[ni],arr[idx]];setCourses(arr);showToast(`تم تحريك ${dir==='up'?'لأعلى':'لأسفل'} ✓`,'info');};
+
+return(<div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode?'dark bg-gray-950':'bg-gray-50'} dot-pattern`}>
+<header className="sticky top-0 z-50 glass border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80">
+<div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+<div className="flex items-center gap-3">
+{selectedCourse&&<button onClick={()=>setSelectedCourseId(null)} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"><i className="fa fa-arrow-right"></i></button>}
+<div className="flex items-center gap-2"><div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white"><i className="fa fa-graduation-cap text-sm"></i></div><div><h1 className="text-base font-bold text-gray-800 dark:text-white leading-tight">{selectedCourse?selectedCourse.title:'مكتبة مواد قسم هندسة القوى الميكانيكية'}</h1>{!selectedCourse&&<p className="text-xs text-gray-400 dark:text-gray-500 hidden sm:block">نظام إدارة المقررات والروابط الدراسية</p>}</div></div>
+</div>
+<div className="flex items-center gap-2">
+{!hideExport&&<button onClick={async()=>{try{await exportSnapshot(courses,darkMode);showToast('تم تصدير النسخة ✓','success');}catch(e){showToast('خطأ في التصدير','error');}}} className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl hover:opacity-90 text-sm font-semibold shadow-md"><i className="fa fa-download"></i><span className="hidden sm:inline">تصدير نسخة</span></button>}
+<button onClick={()=>setDarkMode(!darkMode)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700"><i className={`fa ${darkMode?'fa-sun':'fa-moon'}`}></i></button>
+</div>
+</div>
+</header>
+<main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
+{!bootstrapped?<div className="text-center py-20"><div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p className="text-gray-400">جاري تحميل البيانات...</p></div>
+:selectedCourse?(selectedCourse.type==='gallery'?<GalleryDetail course={selectedCourse} onBack={()=>setSelectedCourseId(null)} onUpdate={u=>setCourses(p=>p.map(c=>c.id===u.id?u:c))} showToast={showToast}/>:<CourseDetail course={selectedCourse} onBack={()=>setSelectedCourseId(null)} onUpdate={u=>setCourses(p=>p.map(c=>c.id===u.id?u:c))} showToast={showToast} darkMode={darkMode}/>):<HomeView courses={courses} onSelectCourse={setSelectedCourseId} onDeleteCourse={id=>{const c=courses.find(x=>x.id===id);if(c&&c.type==='gallery')dbDelByGallery(id).catch(()=>{});setCourses(p=>p.filter(x=>x.id!==id));}} onAddCourse={c=>setCourses(p=>[...p,c])} onMoveCourse={handleMoveCourse} showToast={showToast}/>}
+</main>
+<footer className="mt-auto text-center py-4 text-xs text-gray-400 dark:text-gray-600 border-t border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 glass"><span>made by abdallah elmohammady</span></footer>
+<ToastContainer toasts={toasts} removeToast={removeToast}/>
+</div>);}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
